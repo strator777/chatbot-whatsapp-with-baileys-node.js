@@ -1,6 +1,6 @@
 # WA Server
 
-Server WhatsApp berbasis Node.js yang menyediakan:
+Server Chatbot WhatsApp berbasis Node.js yang menyediakan:
 
 - Manajemen multi-session WhatsApp
 - Login QR dengan Baileys
@@ -94,29 +94,6 @@ Project ini menyimpan data runtime di folder berikut:
 
 Folder-folder tersebut diabaikan oleh Git agar data lokal, session WhatsApp, dan file hasil runtime tidak ikut ter-upload.
 
-## Catatan GitHub
-
-Sebelum upload ke GitHub, pastikan yang ikut commit hanya source code dan dokumentasi. Jangan upload:
-
-- `node_modules/`
-- `sessions/`
-- `database/*.db`
-- `logs/`
-- `uploads/`
-
-## Upload ke GitHub
-
-Jika repo GitHub sudah dibuat, jalankan:
-
-```bash
-git init -b main
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/USERNAME/REPOSITORY.git
-git push -u origin main
-```
-
-Jika Git sudah terinisialisasi lokal, cukup tambahkan remote lalu push.
 
 ## Dokumen Tambahan
 
