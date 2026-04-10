@@ -1,0 +1,63 @@
+<svg width="1400" height="820" viewBox="0 0 1400 820" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="160" y1="80" x2="1220" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#667EEA"/>
+      <stop offset="1" stop-color="#764BA2"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="1400" height="820" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+  <rect width="1400" height="820" fill="url(#bg)"/>
+  <text x="110" y="110" fill="white" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="700">WA Dashboard</text>
+  <rect x="1090" y="70" rx="14" ry="14" width="200" height="56" fill="white" fill-opacity="0.15"/>
+  <text x="1126" y="106" fill="white" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700">ADD SESSION</text>
+  <g filter="url(#shadow)">
+    <rect x="92" y="176" width="380" height="230" rx="24" fill="white"/>
+    <rect x="510" y="176" width="380" height="230" rx="24" fill="white"/>
+    <rect x="928" y="176" width="380" height="230" rx="24" fill="white"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <text x="126" y="228" fill="#1F2937" font-size="28" font-weight="700">Sales-01</text>
+    <text x="126" y="268" fill="#9CA3AF" font-size="14" font-weight="700">PHONE</text>
+    <text x="350" y="268" fill="#111827" font-size="16" text-anchor="end">6281234567890</text>
+    <line x1="126" y1="284" x2="438" y2="284" stroke="#EEF2F7"/>
+    <text x="126" y="320" fill="#9CA3AF" font-size="14" font-weight="700">STATUS</text>
+    <rect x="326" y="296" rx="999" ry="999" width="112" height="32" fill="#DCFCE7"/>
+    <text x="382" y="317" fill="#166534" font-size="14" font-weight="700" text-anchor="middle">ONLINE</text>
+    <rect x="126" y="348" rx="10" ry="10" width="86" height="38" fill="#EEF2FF"/>
+    <rect x="224" y="348" rx="10" ry="10" width="86" height="38" fill="#EEF2FF"/>
+    <rect x="322" y="348" rx="10" ry="10" width="86" height="38" fill="#FEE2E2"/>
+    <text x="169" y="372" fill="#4F46E5" font-size="14" font-weight="700" text-anchor="middle">RULES</text>
+    <text x="267" y="372" fill="#4F46E5" font-size="14" font-weight="700" text-anchor="middle">CONFIG</text>
+    <text x="365" y="372" fill="#B91C1C" font-size="14" font-weight="700" text-anchor="middle">DELETE</text>
+    <text x="544" y="228" fill="#1F2937" font-size="28" font-weight="700">Support-02</text>
+    <text x="544" y="268" fill="#9CA3AF" font-size="14" font-weight="700">PHONE</text>
+    <text x="768" y="268" fill="#111827" font-size="16" text-anchor="end">-</text>
+    <line x1="544" y1="284" x2="856" y2="284" stroke="#EEF2F7"/>
+    <text x="544" y="320" fill="#9CA3AF" font-size="14" font-weight="700">STATUS</text>
+    <rect x="728" y="296" rx="999" ry="999" width="128" height="32" fill="#FEF3C7"/>
+    <text x="792" y="317" fill="#92400E" font-size="14" font-weight="700" text-anchor="middle">NEED LOGIN</text>
+    <rect x="544" y="348" rx="10" ry="10" width="86" height="38" fill="#EEF2FF"/>
+    <rect x="642" y="348" rx="10" ry="10" width="86" height="38" fill="#EEF2FF"/>
+    <rect x="740" y="348" rx="10" ry="10" width="86" height="38" fill="#FEE2E2"/>
+    <text x="587" y="372" fill="#4F46E5" font-size="14" font-weight="700" text-anchor="middle">RULES</text>
+    <text x="685" y="372" fill="#4F46E5" font-size="14" font-weight="700" text-anchor="middle">CONFIG</text>
+    <text x="783" y="372" fill="#B91C1C" font-size="14" font-weight="700" text-anchor="middle">DELETE</text>
+    <text x="962" y="228" fill="#1F2937" font-size="28" font-weight="700">Marketing-03</text>
+    <text x="962" y="268" fill="#9CA3AF" font-size="14" font-weight="700">PHONE</text>
+    <text x="1186" y="268" fill="#111827" font-size="16" text-anchor="end">6289988776655</text>
+    <line x1="962" y1="284" x2="1274" y2="284" stroke="#EEF2F7"/>
+    <text x="962" y="320" fill="#9CA3AF" font-size="14" font-weight="700">STATUS</text>
+    <rect x="1162" y="296" rx="999" ry="999" width="112" height="32" fill="#DBEAFE"/>
+    <text x="1218" y="317" fill="#1D4ED8" font-size="14" font-weight="700" text-anchor="middle">STARTING</text>
+    <rect x="962" y="348" rx="10" ry="10" width="86" height="38" fill="#EEF2FF"/>
+    <rect x="1060" y="348" rx="10" ry="10" width="86" height="38" fill="#EEF2FF"/>
+    <rect x="1158" y="348" rx="10" ry="10" width="86" height="38" fill="#FEE2E2"/>
+    <text x="1005" y="372" fill="#4F46E5" font-size="14" font-weight="700" text-anchor="middle">RULES</text>
+    <text x="1103" y="372" fill="#4F46E5" font-size="14" font-weight="700" text-anchor="middle">CONFIG</text>
+    <text x="1201" y="372" fill="#B91C1C" font-size="14" font-weight="700" text-anchor="middle">DELETE</text>
+    <text x="126" y="504" fill="white" font-size="24" font-weight="700">Preview asset for GitHub README</text>
+    <text x="126" y="540" fill="white" fill-opacity="0.85" font-size="18">Dashboard menampilkan session list, status, dan action rules/config/delete.</text>
+  </g>
+</svg>
