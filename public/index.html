@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WA Dashboard</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    h1 {
+      color: white;
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      animation: slideIn 0.4s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #999;
+      transition: color 0.3s ease;
+    }
+
+    .modal-close:hover {
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      resize: vertical;
+    }
+
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .role-select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 13px;
+      background: white;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .role-select:hover {
+      border-color: #667eea;
+    }
+
+    .role-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .modal-button {
+      width: 100%;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 10px;
+    }
+
+    .modal-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .sessions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .session-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .session-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .session-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+      word-break: break-all;
+    }
+
+    .session-info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+    }
+
+    .info-label {
+      color: #999;
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      color: #333;
+      font-weight: 600;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-online {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-offline {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .status-logout {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .session-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      flex: 1;
+      min-width: 80px;
+      padding: 10px 16px;
+      border: 2px solid #e0e0e0;
+      background: white;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-action:hover {
+      border-color: #667eea;
+      color: #667eea;
+      background: #f8f9ff;
+    }
+
+    .btn-action.danger {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+
+    .btn-action.danger:hover {
+      background: #fff5f5;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: white;
+    }
+
+    .empty-state-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+
+    .empty-state-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .empty-state-text {
+      font-size: 16px;
+      opacity: 0.9;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .sessions-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-content {
+        margin: 20px;
+      }
+    }
+
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #28a745;
+      display: none;
+    }
+
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #dc3545;
+      display: none;
+    }
+
+    .rules-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .rules-table th {
+      background: #f5f5f5;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      color: #666;
+      border-bottom: 2px solid #e0e0e0;
+      text-transform: uppercase;
+    }
+
+    .rules-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 13px;
+    }
+
+    .rules-table tr:hover {
+      background: #f9f9f9;
+    }
+
+    .rules-table .action-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .rules-table .btn-edit, .rules-table .btn-delete {
+      padding: 6px 12px;
+      font-size: 11px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .rules-table .btn-edit {
+      background: #667eea;
+      color: white;
+    }
+
+    .rules-table .btn-edit:hover {
+      background: #5568d3;
+    }
+
+    .rules-table .btn-delete {
+      background: #dc3545;
+      color: white;
+    }
+
+    .rules-table .btn-delete:hover {
+      background: #c82333;
+    }
+
+    .empty-rules {
+      text-align: center;
+      padding: 30px;
+      color: #999;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .modal-select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      background: white;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .modal-select:hover {
+      border-color: #667eea;
+    }
+
+    .modal-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>📱 WhatsApp Sessions</h1>
+    <button class="btn-primary" onclick="openAddSessionModal()">+ Tambah Session</button>
+  </div>
+
+  <div id="emptyState" class="empty-state" style="display: none;">
+    <div class="empty-state-icon">📭</div>
+    <div class="empty-state-title">Tidak ada session</div>
+    <div class="empty-state-text">Buat session baru untuk memulai</div>
+  </div>
+
+  <div class="sessions-grid" id="sessionsList"></div>
+</div>
+
+<!-- Modal Tambah Session -->
+<div class="modal" id="addSessionModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeAddSessionModal()">×</button>
+    <div class="modal-header">Tambah Session Baru</div>
+    <div class="success-message" id="successMessage">✓ Session berhasil ditambahkan!</div>
+    <div class="error-message" id="errorMessage"></div>
+    <form onsubmit="submitAddSession(event)">
+      <div class="form-group">
+        <label for="sessionName">Nama Session</label>
+        <input type="text" id="sessionName" placeholder="contoh: kid1, bot-1, dll" required>
+      </div>
+      <button type="submit" class="modal-button">Buat Session</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Manage Chatbot Rules -->
+<div class="modal" id="manageRulesModal">
+  <div class="modal-content" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
+    <button class="modal-close" onclick="closeManageRulesModal()">×</button>
+    <div class="modal-header">Kelola Chatbot Rules</div>
+    <div class="success-message" id="rulesSuccessMessage">✓ Rule berhasil disimpan!</div>
+    <div class="error-message" id="rulesErrorMessage"></div>
+    
+    <form onsubmit="submitAddRule(event)" style="margin-bottom: 30px; padding-bottom: 30px; border-bottom: 2px solid #e0e0e0;">
+      <input type="hidden" id="ruleId">
+      <input type="hidden" id="sessionIdForRules">
+      <div class="form-group">
+        <label for="triggerWord">Pesan Diterima (Keyword)</label>
+        <input type="text" id="triggerWord" placeholder="contoh: halo, bye, info" required>
+      </div>
+      <div class="form-group">
+        <label for="ruleResponse">Balasan</label>
+        <input type="text" id="ruleResponse" placeholder="contoh: Halo! Ada yang bisa dibantu?" required>
+      </div>
+      <div class="form-group">
+        <label for="actionType">Action Type</label>
+        <select id="actionType" class="modal-select" onchange="onActionTypeChange()">
+          <option value="reply">Reply Only (Hanya Balas)</option>
+          <option value="fungsi">Menjalankan fungsi</option>
+          <option value="webhook">Webhook (Balas + Hubungi URL)</option>
+        </select>
+      </div>
+      <div class="form-group" id="actionParamGroup" style="display: none;">
+        <label for="actionParam">Parameter (Optional)</label>
+        <input type="text" id="actionParam" placeholder="contoh: https://example.com/webhook atau nama notifikasi">
+      </div>
+      
+      <button type="submit" class="modal-button" id="ruleSubmitBtn">Tambah Rule</button>
+    </form>
+
+    <h3 style="margin-bottom: 15px; font-size: 16px;">Daftar Rules</h3>
+    <div id="rulesList"></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

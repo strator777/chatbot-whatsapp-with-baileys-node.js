@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Tambah Session WhatsApp</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 30px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,.1);
+    }
+    #qr {
+      margin-top: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>➕ Tambah Session WhatsApp</h2>
+
+  <input type="text" id="sessionId" placeholder="nama_session"
+         style="width:100%;padding:8px">
+
+  <button onclick="addSession()" style="margin-top:10px;width:100%">
+    Tambah Session
+  </button>
+
+  <div id="status"></div>
+  <div id="qr"></div>
+</div>
+
+<script>
+  const socket = io();
+
+  function addSession() {
+    const sessionId = document.getElementById('sessionId').value;
+
+    if (!sessionId) {
+      alert('Nama session wajib diisi');
+      return;
+    }
+
+    fetch('/api/wa/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId })
+    })
+    .then(res => res.json())
+    .then(() => {
+      document.getElementById('status').innerText =
+        'Menunggu QR...';
+    });
+  }
+
+  socket.on('qr', data => {
+    const inputSession = document.getElementById('sessionId').value;
+
+    if (data.sessionId !== inputSession) return;
+
+    document.getElementById('qr').innerHTML = '';
+    new QRCode(document.getElementById('qr'), {
+      text: data.qr,
+      width: 250,
+      height: 250
+    });
+  });
+
+  socket.on('ready', data => {
+    const inputSession = document.getElementById('sessionId').value;
+
+    if (data.sessionId === inputSession) {
+      document.getElementById('qr').innerHTML =
+        '<h3>✅ Session Aktif</h3>';
+    }
+  });
+</script>
+
+</body>
+</html>
